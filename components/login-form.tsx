@@ -24,12 +24,12 @@ export function LoginForm({
     try {
         const response = await axios.post("auth/login", { email, password });
 
-        let {token, profile} = response;
+        let {token, profile} = response.data;
 
         localStorage.setItem("token", token);
         localStorage.setItem("profile", JSON.stringify(profile));
 
-        return router.push('/');
+        return router.push('/dashboard');
     } catch (error) {
       console.error("Login error:", error);
       return { error: error.message || "Ошибка авторизации" };

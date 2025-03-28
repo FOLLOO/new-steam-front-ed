@@ -1,8 +1,7 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import axios from "axios";
-import {BASE_URL} from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,13 +18,15 @@ export const metadata: Metadata = {
   description: "BALALAIKA",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
 
-  return (
+
+    return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
