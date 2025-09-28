@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { objectDictionaries } from "@/bin/utils";
 import { Separator } from "@radix-ui/react-separator";
+import { ItemsFilter } from "@/components/items/items-filter";
+import { ItemsAll } from "@/components/items/items-all";
 
 
 type Inventory = {
@@ -84,12 +86,12 @@ export default function Page() {
             </p>
           </div>
       </div>
-      <div className="grid gap-6 grid-cols-4"> {/* 4 колонки */}
-        <div className="flex flex-col gap-6 col-span-3"> {/* 3/4 */}
-          <InventoryItems title="Все предметы" />
+      <div className="grid gap-6 grid-cols-6"> {/* 4 колонки */}
+        <div className="flex flex-col gap-6 col-span-4"> {/* 3/4 */}
+          <ItemsAll title="Все предметы" />
         </div>
-        <div className="flex flex-col gap-6 col-span-1"> {/* 1/4 */}
-          <InventoryItems title="Фильтр" />
+        <div className="flex flex-col gap-6 col-span-2"> {/* 1/4 */}
+          <ItemsFilter  />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { InventoryProvider } from "@/components/inventory-provider"
+import { ThemeToggle } from "@/components/them-toggle"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -34,6 +35,7 @@ export default function LeftMenuLayout({ children }: RootLayoutProps) {
                                 orientation="vertical"
                                 className="mr-2 data-[orientation=vertical]:h-4"
                             />
+                            <ThemeToggle/>
                             {/* <Breadcrumb>
                                 <BreadcrumbList>
                                     <BreadcrumbItem className="hidden md:block">

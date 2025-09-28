@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { objectDictionaries } from "@/bin/utils";
 import { Separator } from "@radix-ui/react-separator";
+import { useRouter } from "next/navigation";
 
 
 type Inventory = {
@@ -57,6 +58,7 @@ export default function Page() {
   const [data, setData] = useState<Inventory>();
   const [edit, setEdit] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter()
 
   const form = useForm<FormData>({
     resolver: zodResolver(
@@ -164,7 +166,7 @@ export default function Page() {
                 </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem >
+                <DropdownMenuItem onClick={() => router.push('/dashboard/items')}>
                   <Snail className="size-4"/>
                   Сам решу
                 </DropdownMenuItem>
