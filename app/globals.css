@@ -212,3 +212,40 @@
 .dark .scrollbar-modern::-webkit-scrollbar-thumb:hover {
   background: oklch(0.50 0.08 250);
 }
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, 
+      oklch(0.45 0.18 260) 0%, 
+      oklch(0.65 0.15 220) 50%, 
+      oklch(0.80 0.20 120) 100%
+    );
+  }
+  
+  .bg-accent-green {
+    background-color: oklch(0.80 0.20 120);
+  }
+  
+  .bg-primary-blue {
+    background-color: oklch(0.45 0.18 260);
+  }
+  
+  .from-primary-blue {
+    --tw-gradient-from: oklch(0.45 0.18 260);
+    --tw-gradient-to: oklch(0.45 0.18 260 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  .to-accent-green {
+    --tw-gradient-to: oklch(0.80 0.20 120);
+  }
+}
+
+/* Темная тема adjustments */
+.dark .gradient-primary {
+  background: linear-gradient(135deg, 
+    oklch(0.12 0.04 250) 0%, 
+    oklch(0.15 0.05 250) 50%, 
+    oklch(0.20 0.06 250) 100%
+  );
+}
