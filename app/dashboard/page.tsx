@@ -67,14 +67,32 @@ export default function Page() {
     fethItemsData()
   }, [])
   
- const handleRemoveItem = (itemId: string, category: keyof typeof data.items) => {
-  setData(prevData => ({
-    ...prevData,
-    items: {
-      ...prevData.items,
-      [category]: prevData.items[category].filter((item: any) => item.inventory_item_id !== itemId)
-    }
-  }));
+const handleRemoveItem = (itemId: string, category: keyof typeof data.items) => {
+  setData(prevData => {
+    const updatedCategory = prevData.items[category].map((item: any) => {
+      // Находим объект по inventory_item_id
+      if (item.inventory_item_id === itemId) {
+        // Если количество больше 1, уменьшаем quantity
+        if (item.quantity > 1) {
+          return {
+            ...item,
+            quantity: item.quantity - 1
+          };
+        }
+        // Если quantity = 1, возвращаем null для фильтрации (полное удаление)
+        return null;
+      }
+      return item;
+    }).filter(Boolean); // Удаляем null значения
+
+    return {
+      ...prevData,
+      items: {
+        ...prevData.items,
+        [category]: updatedCategory
+      }
+    };
+  });
 };
 
   return (

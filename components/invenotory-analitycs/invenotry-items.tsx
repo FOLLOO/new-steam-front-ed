@@ -68,6 +68,7 @@ export function InventoryItems({
     });
   };
 
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
@@ -137,7 +138,7 @@ export function InventoryItems({
           {data && data.length > 0 ? (
             data.map((item, index) =>
               [...Array(item.quantity)].map((_, i) => (
-                <ItemRow onRemove={onRemove} item={item} type="price" key={index + 'ItemROW'} />
+                <ItemRow onRemove={onRemove} item={item} type="price" key={index + 'ItemROW' + i} />
               ))
             )
           ) : (

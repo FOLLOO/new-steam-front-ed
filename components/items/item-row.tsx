@@ -7,6 +7,7 @@ import { RequestsModel } from "@/bin/RequestsModel";
 import { cn } from "@/lib/utils";
 import { error } from "console";
 import { useState } from "react";
+import Link from "next/link";
 
 
 
@@ -16,6 +17,9 @@ interface Item {
   name: string;
   createdAt: string;
   inventory_item_id: string,
+  degree_of_wear?: {
+    name: string
+  }
   value?: {
     lowest?: string;
     median?: string;
@@ -32,6 +36,7 @@ interface ItemRowProps {
   onRemove?: (itemId: string, category: 'weapons' | 'stickers' | 'agents' | 'containers') => void;
 }
 
+// https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Ice%20Coaled%20(Battle-Scarred)
 
 // Правильно: используем тип для пропса
 export default function ItemRow({ item, type = 'default', onRemove }: ItemRowProps) {
@@ -129,7 +134,6 @@ export default function ItemRow({ item, type = 'default', onRemove }: ItemRowPro
     }
   }
 
-  console.log(item)
 
   // async function fethItemsData(){
   //   let inventoryID = localStorage.getItem('inventory') || ''
@@ -153,10 +157,13 @@ export default function ItemRow({ item, type = 'default', onRemove }: ItemRowPro
   //   }
   // }
 
+  //M4A4%20%7C%20%E9%BE%8D%E7%8E%8B%20(Dragon%20King)%20(Field-Tested)
+  //M4A4%20%7C%20%E9%BE%8D%E7%8E%8B(Dragon%20King)%20(Field-Tested)
+
   return (
     <div className="flex items-center gap-4 p-4 transition-colors group select-none ">
       {/* Изображение предмета */}
-      <div className="flex-shrink-0">
+      <Link className="flex-shrink-0" href={`https://steamcommunity.com/market/listings/730/${encodeURIComponent(displayName)} (${item.degree_of_wear?.name})`}>
         <SteamSkinImage
           marketHashName={`${displayName} (Field-Tested)`}
           width={64}
@@ -165,7 +172,7 @@ export default function ItemRow({ item, type = 'default', onRemove }: ItemRowPro
           alt={displayName}
           priority={false}
         />
-      </div>
+      </Link>
 
       {/* Информация о предмете */}
       <div className="flex-1 min-w-0">
