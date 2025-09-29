@@ -31,6 +31,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { RequestsModel } from "@/bin/RequestsModel"
+import { useInventory } from "./inventory-provider"
 
 // This is sample data.
 const data = {
@@ -199,15 +200,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       updatedAt: obj.updatedAt
     }));
   }
+  
+  const { updateInventory } = useInventory() // получаем функцию обновления
 
   async function fetchData(path: string) {
     const request = new RequestsModel()
+    
     try {
       const res = await request.getAllByUser(path)
       
       setdataInventories(res)
       setUserInventories(parseData(res))
       
+      updateInventory(res[0])
+
       return res
     } catch (error) {
       console.error("Error fetching data:", error)

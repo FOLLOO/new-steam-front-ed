@@ -152,7 +152,7 @@ export function ItemsFilter() {
                       />
                     ) : field.type === "text" ? (
                       <FormField
-                        key={field.name}
+                        key={field.name + 'text'}
                         control={form.control}
                         name={field.name}
                         render={({ field: f }) => (

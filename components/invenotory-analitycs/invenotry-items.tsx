@@ -1,65 +1,153 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Package,
+  Minus,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
+import ItemRow from "../items/item-row";
+import { SkeletonLoader } from "../loading";
+import { cn } from "@/lib/utils";
 
-const transactions = [
-  { id: 122, name: "Amazon.com", amount: -129.99, date: "2023-07-15", type: "expense" },
-  { id: 223, name: "Whole Foods Market", amount: -89.72, date: "2023-07-10", type: "expense" },
-  { id: 33, name: "Netflix Subscription", amount: -15.99, date: "2023-07-05", type: "expense" },
-  { id: 4123, name: "Freelance Payment", amount: 750, date: "2023-07-12", type: "income" },
-  { id: 51234, name: "Gas Station", amount: -45.5, date: "2023-07-18", type: "expense" },
-  { id: 234, name: "Amazon.com", amount: -129.99, date: "2023-07-15", type: "expense" },
-  { id: 12342, name: "Whole Foods Market", amount: -89.72, date: "2023-07-10", type: "expense" },
-  { id: 12343, name: "Netflix Subscription", amount: -15.99, date: "2023-07-05", type: "expense" },
-  { id: 41243, name: "Freelance Payment", amount: 750, date: "2023-07-12", type: "income" },
-  { id: 12345, name: "Gas Station", amount: -45.5, date: "2023-07-18", type: "expense" },
-]
 
-export function InventoryItems({title = 'Тип объетка'}: {title?: string}) {
+export function InventoryItems({
+  title = "Тип объетка",
+  data,
+  onRemove,
+}: {
+  title?: string;
+  data?: any;
+  onRemove?: (itemId: string, category: 'weapons' | 'stickers' | 'agents' | 'containers') => void;
+}) {
 
-  let totalBalance = transactions.map((item) => item.amount).reduce((sum, amount) => sum + amount, 0);
+  const parsePrice = (price: string): number => {
+    return parseFloat(price.replace("руб.", "").replace(",", ".").trim());
+  };
+
+
+  const stats = data.reduce(
+    (acc, item) => {
+      const currentPrice = parsePrice(item.value?.lowest || "0");
+      const previousPrice = parsePrice(item.prev_value || "0");
+      const quantity = item.quantity || 1;
+
+      const priceChange = currentPrice - previousPrice;
+
+      return {
+        totalBalance: acc.totalBalance + currentPrice,
+        totalPreviousBalance: acc.totalPreviousBalance + previousPrice,
+        totalItems: acc.totalItems + quantity,
+        priceChanges: {
+          positive: acc.priceChanges.positive + (priceChange > 0 ? 1 : 0),
+          negative: acc.priceChanges.negative + (priceChange < 0 ? 1 : 0),
+          neutral: acc.priceChanges.neutral + (priceChange === 0 ? 1 : 0),
+        },
+      };
+    },
+    {
+      totalBalance: 0,
+      totalPreviousBalance: 0,
+      totalItems: 0,
+      priceChanges: { positive: 0, negative: 0, neutral: 0 },
+    }
+  );
+
+  const totalChange = stats.totalBalance - stats.totalPreviousBalance;
+  const totalChangePercent =
+    stats.totalPreviousBalance > 0
+      ? (totalChange / stats.totalPreviousBalance) * 100
+      : 0;
+
+  const formatCurrency = (value: number): string => {
+    return value.toLocaleString("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  };
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
         <CardTitle className="text-xl font-medium">{title}</CardTitle>
       </CardHeader>
       <CardContent>
+        {data.length === 0 && null}
         <div className="space-y-4">
-          <div>
-
-          <div className={totalBalance > 0 ? "text-4xl text-green-500 font-bold": "text-4xl text-red-500 font-bold"}>${totalBalance.toLocaleString()}</div>
-          <p className="text-xs text-muted-foreground">Общий доход по скинам (сейчас)</p>
-          </div>
-          {transactions.map((transaction) => (
-            <div key={transaction.id + title} className="flex items-center">
-              <div className="flex-1">
-                <p className="text-sm font-medium">{transaction.name}</p>
-                <p className="text-xs text-muted-foreground">{transaction.date}</p>
+          <div className={cn("grid grid-cols-1 lg:grid-cols-1 gap-4")}>
+            {/* Общий баланс */}
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <p className="text-5xl font-bold text-foreground">
+                  {formatCurrency(stats.totalBalance)}
+                </p>
+                <div className="flex flex-col">
+                  <div
+                    className={cn(
+                      "text-sm flex  items-center gap-1 ",
+                      totalChange > 0
+                        ? "text-green-600"
+                        : totalChange < 0
+                        ? "text-red-600"
+                        : "text-foreground"
+                    )}
+                  >
+                    {totalChange > 0 ? (
+                      <>+</>
+                    ) : totalChange < 0 ? (
+                      <>-</>
+                    ) : (
+                      <Minus className="w-4 h-4" />
+                    )}
+                    {formatCurrency(totalChange)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {totalChangePercent > 0 ? "+" : ""}
+                    {totalChangePercent.toFixed(1)}%
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center">
-                <span
-                  className={`text-sm font-medium ${
-                    transaction.type === "income"
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-red-600 dark:text-red-400"
-                  }`}
-                >
-                  {transaction.type === "income" ? "+" : "-"}${Math.abs(transaction.amount).toFixed(2)}
-                </span>
-                {transaction.type === "income" ? (
-                  <ArrowUpRight className="h-4 w-4 text-green-600 dark:text-green-400 ml-1" />
-                ) : (
-                  <ArrowDownRight className="h-4 w-4 text-red-600 dark:text-red-400 ml-1" />
-                )}
+              <div className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                <Package className="w-4 h-4" />
+                Всего предметов: {stats.totalItems}
+              </div>
+              {/* Растущие предметы */}
+              <div className="text-sm text-green-600 flex items-center gap-1">
+                <TrendingUp className="w-4 h-4" />
+                {stats.priceChanges.positive}
+                <p className="font-normal text-sm text-muted-foreground">
+                  Предмета растут в цене
+                </p>
+              </div>
+
+              {/* Падающие предметы */}
+              <div className="text-sm text-red-600 flex items-center gap-1">
+                <TrendingDown className="w-4 h-4" />
+                {stats.priceChanges.negative}
+                <p className="font-normal text-sm text-muted-foreground">
+                  Предмета падают в цене
+                </p>
               </div>
             </div>
-          ))}
+          </div>
+
+
+          {data && data.length > 0 ? (
+            data.map((item, index) =>
+              [...Array(item.quantity)].map((_, i) => (
+                <ItemRow onRemove={onRemove} item={item} type="price" key={index + 'ItemROW'} />
+              ))
+            )
+          ) : (
+            <SkeletonLoader type="text" />
+          )}
         </div>
         <Button className="w-full mt-4" variant="outline">
           View All Transactions
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }

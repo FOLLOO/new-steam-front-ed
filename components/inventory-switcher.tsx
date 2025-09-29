@@ -38,9 +38,11 @@ export function InventorySwitcher({
   const [activeTeam, setActiveTeam] = React.useState<InventoryType | null>(inventories[0])
   const [open, setOpen] = React.useState(false)
 
+  const { updateInventory } = useInventory() // получаем функцию обновления
+
   async function openInventory(inventory: Inventory) {
     let jsonInv = JSON.stringify(inventory)
-    localStorage.setItem('invetory', jsonInv)
+    localStorage.setItem('inventory', jsonInv)
     updateInventory(inventory)
 
     location.reload()
@@ -69,7 +71,6 @@ export function InventorySwitcher({
 ]
 
 
-  const { updateInventory } = useInventory() // получаем функцию обновления
 
   async function handleCreateDatabase() {
     let name = 'CS Инвентарь'
@@ -80,7 +81,7 @@ export function InventorySwitcher({
     try {
         let inventory = await request.createByUser('inventories', data);
 
-        localStorage.setItem('invetory', inventory)
+        localStorage.setItem('inventory', inventory)
         updateInventory(inventory)
         
         alert('Инвентарь успешно создан')
@@ -96,7 +97,7 @@ export function InventorySwitcher({
   }
 
   React.useEffect(() => {
-    let activeInv = localStorage.getItem('invetory')
+    let activeInv = localStorage.getItem('inventory')
     if (!activeInv || activeInv === 'undefined') { 
       return
     }

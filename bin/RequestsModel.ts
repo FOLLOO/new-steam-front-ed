@@ -110,8 +110,8 @@ export class RequestsModel{
     });
       if (res.ok) {
         const data = await res.json();
-        toast('Service created successfully.!', {
-          description: 'Please say thank you to Sairommef',
+        toast('Успешно создана запись!', {
+          description: 'Скажи спасибо Sairommef',
         });
         return data; // <--- добавьте это
       }
@@ -159,7 +159,7 @@ export class RequestsModel{
     }
   }
 
-    async updateByUser(database: string, data: Record<string, any>, id:string) {
+  async updateByUser(database: string, data: Record<string, any>, id:string) {
     const token = localStorage.getItem("token");
 
     try{
@@ -174,6 +174,38 @@ export class RequestsModel{
       if (res.ok) {
         const data = await res.json();
         toast('Service created successfully.!', {
+          description: 'Please say thank you to Sairommef',
+        });
+        return data; // <--- добавьте это
+      }
+      else {
+        toast('Error with server!', {
+          description: 'The data is not empty please check the connecting to server or LAN or server data, or hit Nafis on the back of the head',
+        });
+        return []; // <--- чтобы не было undefined
+      }
+    }catch(e: any){
+      toast('Something went wrong!', {
+        description: 'Logs was send on console',
+      });
+      return []; // <--- чтобы не было undefined
+    }
+  }
+
+    async deleteByUser(database: string, id:string) {
+    const token = localStorage.getItem("token");
+
+    try{
+      const res = await fetch(`${this.url}/${database}/${id}`, {
+      method: 'DELETE',
+      headers: {
+        "Authorization": `Bearer ${token}`, // <--- токен в хедерах
+        "Content-Type": "application/json"
+      },
+    });
+      if (res.ok) {
+        const data = await res.json();
+        toast('Delete successfully.!', {
           description: 'Please say thank you to Sairommef',
         });
         return data; // <--- добавьте это
